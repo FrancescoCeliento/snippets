@@ -4,6 +4,7 @@ var gUrlDeployGoogleAppsScript = ''; // Sostituisci con l'URL del tuo webhook
 var gUrlBlog = ''; //Sostituisci con la root del blog
 var gUsernameBlog = ''; // Sostituisci con il tuo username di autenticazione su Wordpress
 var gPasswordBlog = ''; // Sostituisci con la tua password o password dell'app
+var gIdCategoriaBlog = 0; //Sostituisci con l'id della categoria a cui i post sono destinati
 
 var gAdminChatId = ''; //Valorizza con la tua chatid di Telegram
 
@@ -126,7 +127,7 @@ function publishPostOnWordpress(domain, titleText, contentText) {
     title: titleText,
     content: contentText,
     status: 'publish',
-    categories: [1] // Puoi usare 'draft' se vuoi salvare come bozza
+    categories: [gIdCategoriaBlog] // Puoi usare 'draft' se vuoi salvare come bozza
   };
 
   var options = {
