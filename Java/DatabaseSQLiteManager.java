@@ -61,7 +61,7 @@ public class DatabaseSQLiteManager {
         }
     }
 
-     // Metodo per eliminare una tabella
+    // Metodo per eliminare una tabella
     public void dropTable(String tableName) {
         String dropTableSQL = "DROP TABLE IF EXISTS " + tableName;
         try (PreparedStatement pstmt = connect().prepareStatement(dropTableSQL)) {
