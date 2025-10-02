@@ -16,6 +16,7 @@ public class DatabaseSQLiteManager {
     }
 
     // Metodo per connettersi al database
+    // Nota: SQLite crea automaticamente il file del database se non esiste già, quindi non è necessario alcun codice aggiuntivo per gestire la creazione del file
     private Connection connect() throws SQLException {
         if (connection == null || connection.isClosed()) {
             connection = DriverManager.getConnection(url);
@@ -24,49 +25,36 @@ public class DatabaseSQLiteManager {
         return connection;
     }
 
-    // Metodo per scrivere (inserire) dati nel database
-    public void insertData(String query, Object... params) {
-        try (PreparedStatement pstmt = connect().prepareStatement(query)) {
-            setParameters(pstmt, params);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Metodo per aggiornare dati nel database
-    public void updateData(String query, Object... params) {
-        insertData(query, params); // Riutilizziamo il metodo insertData per l'aggiornamento
-    }
-
-    // Metodo per eliminare dati dal database
-    public void deleteData(String query, Object... params) {
-        insertData(query, params); // Riutilizziamo il metodo insertData per l'eliminazione
-    }
-
-    // Metodo per ottimizzare il database
-    public void optimizeDatabase() {
-        String query = "VACUUM"; // Comando per ottimizzare il database
-        try (PreparedStatement pstmt = connect().prepareStatement(query)) {
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Metodo per eseguire una query di selezione
-    public ResultSet selectData(String query, Object... params) {
+    // Metodo per eseguire una query di selezione con parametri
+    public ResultSet selectData(String sql, Object... params) {
         ResultSet rs = null;
         try {
-            PreparedStatement pstmt = connect().prepareStatement(query);
-            setParameters(pstmt, params);
+            PreparedStatement pstmt = connect().prepareStatement(sql);
+            setParameters(pstmt, params); // Imposta i parametri
             rs = pstmt.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
+        // Ricorda di ciclare su rs.next() (es while (rs != null && rs.next()) { TODO }) nel chiamante
+        /* Per leggere campi int rs.getInt('campo'), per leggere campi string rs.getString('campo')
+        */
         return rs;
     }
 
+    // Metodo per scrivere (inserire, aggiornare o cancellare) dati nel database
+    public boolean updateData(String query, Object... params) {
+        try (PreparedStatement pstmt = connect().prepareStatement(query)) {
+            setParameters(pstmt, params);
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Metodo per eseguire query DDL (CREATE, ALTER, DROP, ecc... )
     public void executeQuery(String sql) {
         try (PreparedStatement pstmt = connect().prepareStatement(sql)) {
             pstmt.executeUpdate();
@@ -79,6 +67,16 @@ public class DatabaseSQLiteManager {
     private void setParameters(PreparedStatement pstmt, Object... params) throws SQLException {
         for (int i = 0; i < params.length; i++) {
             pstmt.setObject(i + 1, params[i]);
+        }
+    }
+
+    // Metodo per ottimizzare il database
+    public void optimizeDatabase() {
+        String query = "VACUUM"; // Comando per ottimizzare il database
+        try (PreparedStatement pstmt = connect().prepareStatement(query)) {
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
