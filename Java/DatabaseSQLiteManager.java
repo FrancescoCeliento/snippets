@@ -43,14 +43,12 @@ public class DatabaseSQLiteManager {
     }
 
     // Metodo per scrivere (inserire, aggiornare o cancellare) dati nel database
-    public boolean updateData(String query, Object... params) {
+    public void updateData(String query, Object... params) {
         try (PreparedStatement pstmt = connect().prepareStatement(query)) {
             setParameters(pstmt, params);
             pstmt.executeUpdate();
-            return true;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
     }
 
