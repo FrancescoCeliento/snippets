@@ -61,6 +61,16 @@ public class DatabaseSQLiteManager {
         }
     }
 
+     // Metodo per eliminare una tabella
+    public void dropTable(String tableName) {
+        String dropTableSQL = "DROP TABLE IF EXISTS " + tableName;
+        try (PreparedStatement pstmt = connect().prepareStatement(dropTableSQL)) {
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Metodo per impostare i parametri nel PreparedStatement
     private void setParameters(PreparedStatement pstmt, Object... params) throws SQLException {
         for (int i = 0; i < params.length; i++) {
