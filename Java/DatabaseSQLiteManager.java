@@ -112,4 +112,29 @@ public class DatabaseSQLiteManager {
             e.printStackTrace();
         }
     }
+
+    // Metodo per controllare se esiste una tabella
+    private boolean tableExists(String tableName) throws SQLException {
+       String query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?";
+       try (PreparedStatement stmt = connection.prepareStatement(query)) {
+           stmt.setString(1, tableName);
+           ResultSet rs = stmt.executeQuery();
+           return rs.next(); // Restituisce true se la tabella esiste
+       }
+   }
+
+   // Metodo per controllare se esiste una colonna in una tabella
+   private boolean columnExists(String tableName, String columnName) throws SQLException {
+       String query = "PRAGMA table_info(" + tableName + ")";
+       try (Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(query)) {
+           while (rs.next()) {
+               String currentColumnName = rs.getString("name");
+               if (currentColumnName.equalsIgnoreCase(columnName)) {
+                   return true; // Restituisce true se la colonna esiste
+               }
+           }
+       }
+       return false; // Restituisce false se la colonna non esiste
+   }
 }
