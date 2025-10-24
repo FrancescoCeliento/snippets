@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Lo script si occupa di monitorare un feed rss memorizzando l'ultimo link pubblicato.
+ * Ogni volta che interrogando un feed rss riscontra novità, estrae solo le novità e le
+ * pubblica sul un canale telegram configurato con il nostro bot.
+ * Articolo di riferimento: https://www.selectallfromdual.com/blog/1669/aggiornare-un-canale-telegram-con-php
+ */
+
 $rssFeedUrl = '[URL_FEEDRSS]'; 
 $storageFile = 'last_rss_url.txt';
 $tokenBotTelegram = '[BOT_TELEGRAM_TOKEN]';
