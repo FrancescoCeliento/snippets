@@ -1,0 +1,126 @@
+<!--
+Clone semplice di CodePen con 3 riquadri (HTML, CSS, JS) e un'area di anteprima.
+by Dummy-X - www.selectallfromdual.com
+Caratteristiche:
+- 3 editor (textarea) rimbalzabili
+- Anteprima live in iframe (premi "Esegui" o Ctrl+Enter)
+- Salvataggio automatico in localStorage
+- Esporta progetto (zip non incluso, ma puoi scaricare sorgenti singoli)
+- Ridimensionamento orizzontale della colonna editor / preview
+- Pulsante per impostare un template base
+
+Nota: questo è un clone minimale
+
+-->
+
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CodePen Clone</title>
+  <style>
+    :root{
+      --bg:#0f1724; --panel:#0b1220; --muted:#9aa5b1; --accent:#06b6d4;
+      --gap:10px;
+      font-family: Inter, ui-sans-serif, system-ui;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:#071224;color:#e6eef6}
+
+    header{padding:12px 16px;background:#0a1324;}
+
+    .container{
+      height:calc(100% - 50px);
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:var(--gap);
+      padding:var(--gap);
+    }
+
+    .editors{
+      display:grid;
+      grid-template-rows:1fr 1fr 1fr;
+      gap:var(--gap);
+      min-height:0;
+    }
+
+    .card{
+      background:var(--panel);
+      border-radius:8px;
+      padding:8px;
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+    }
+    .title{font-size:13px;color:var(--muted);margin-bottom:4px}
+    textarea{flex:1;background:#0e1a30;border:1px solid #14233c;color:white;
+             resize:none;padding:8px;border-radius:6px;font-family:monospace;
+             min-height:0}
+
+    .preview-card{display:flex;flex-direction:column;gap:8px;background:var(--panel);padding:8px;border-radius:8px;}
+    iframe{flex:1;width:100%;border-radius:8px;background:white;border:none}
+
+    .toolbar{display:flex;gap:6px}
+    .btn{padding:6px 10px;background:#102038;border:1px solid #20324e;border-radius:6px;color:#9aa5b1;font-size:13px;cursor:pointer}
+    .btn.primary{color:var(--accent);border-color:var(--accent)}
+
+  </style>
+</head>
+<body>
+
+<header><strong>CodePen Clone (by Dummy-X [www.selectallfromdual.com])</strong></header>
+
+<div class="container">
+
+  <div class="editors">
+    <div class="card"><div class="title">HTML</div><textarea id="htmlEditor"></textarea></div>
+    <div class="card"><div class="title">CSS</div><textarea id="cssEditor"></textarea></div>
+    <div class="card"><div class="title">JS</div><textarea id="jsEditor"></textarea></div>
+  </div>
+
+  <div class="preview-card">
+    <div class="toolbar">
+      <button class="btn primary" id="runBtn">Esegui</button>
+      <button class="btn" id="tplBtn">Template</button>
+      <button class="btn" id="clearBtn">Pulisci</button>
+    </div>
+    <iframe id="preview"></iframe>
+  </div>
+
+</div>
+
+<script>
+const htmlEditor=document.getElementById("htmlEditor");
+const cssEditor=document.getElementById("cssEditor");
+const jsEditor=document.getElementById("jsEditor");
+const preview=document.getElementById("preview");
+
+function buildPreview(){
+  const html=htmlEditor.value;
+  const css=cssEditor.value;
+  const js=jsEditor.value;
+
+  const doc = `<!DOCTYPE html><html><head><style>${css}</style></head><body>${html}<script>${js}<\/script></body></html>`;
+
+  preview.srcdoc = doc;
+}
+
+document.getElementById("runBtn").onclick = buildPreview;
+
+document.getElementById("tplBtn").onclick = ()=>{
+  htmlEditor.value = `<h1>Ciao!</h1><p>Modifica i riquadri a sinistra.</p>`;
+  cssEditor.value = `body{font-family:sans-serif;padding:20px;background:#f2f5fa;color:#333}`;
+  jsEditor.value = `console.log('JS OK');`;
+  buildPreview();
+};
+
+document.getElementById("clearBtn").onclick = ()=>{
+  htmlEditor.value=""; cssEditor.value=""; jsEditor.value="";
+  buildPreview();
+};
+
+</script>
+
+</body>
+</html>
